@@ -14,10 +14,9 @@ import wandb
 from torch.cuda.amp import autocast, GradScaler
 import numpy as np
 
-# 使用第二份代码中的数据集和模型定义
-from model_v2 import SwinClassifier, load_datasets
 
-# 设置设备
+from model_v2 import *
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def train_epoch(model, train_loader, criterion, optimizer, epoch, scaler):
@@ -26,7 +25,7 @@ def train_epoch(model, train_loader, criterion, optimizer, epoch, scaler):
     correct = 0
     total = 0
     epoch_start_time = time.time()
-    batch_times = []  # 记录每个batch的处理时间
+    batch_times = []  
     
     pbar = tqdm(train_loader, desc=f'Epoch {epoch}')
     for batch_idx, (inputs, targets) in enumerate(pbar):
@@ -183,8 +182,13 @@ def train(args):
     
  
     print(f"Creating model with {args.num_classes} classes...")
-    model = SwinClassifier(args.num_classes, model_path=args.train_model_path).to(device)
+
+    # 
+    # model = SwinClassifier(args.num_classes, model_path=args.train_model_path).to(device)
     
+    # use this code to get baseline classifier
+    model = SwinBaselineClassifier(args.num_classes, model_path=args.train_model_path).to(device)
+
  
     total_params = sum(p.numel() for p in model.parameters())
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -198,7 +202,7 @@ def train(args):
         "frozen_parameters": total_params - trainable_params,
     })
     
-    # 创建损失函数、优化器和学习率调度器
+  
     criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
     optimizer = optim.AdamW(
         filter(lambda p: p.requires_grad, model.parameters()),
@@ -215,33 +219,30 @@ def train(args):
         pct_start=0.05,
         anneal_strategy='cos'
     )
-    
+    print('total_steps: ', args.epochs * len(train_loader))
+
+
     # 创建混合精度训练的scaler
     scaler = GradScaler()
     
-    # 训练循环
     best_acc = 0
     patience_counter = 0
     
     try:
         for epoch in range(args.epochs):
-            # 训练一个epoch
             train_loss, train_acc, epoch_time = train_epoch(
                 model, train_loader, criterion, optimizer, epoch, scaler
             )
             
-            # 验证
             val_loss, val_acc = validate(model, val_loader, criterion)
             
-            # 更新学习率
-            scheduler.step()
             
-            # 打印信息
+            scheduler.step()
             print(f'Epoch {epoch}: Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}%, '
                   f'Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.2f}%, '
                   f'Time: {epoch_time:.1f}s')
             
-            # 保存检查点
+           
             is_best = val_acc > best_acc
             if is_best:
                 best_acc = val_acc
