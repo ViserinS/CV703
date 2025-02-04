@@ -4,7 +4,7 @@
 Hazza Mahmood, Yongqiang Yu, Seung Hun (Eddie) Han  
 
 ## Overview
-This repository contains the implementation of a **Swin Transformer-based image classifier** for the CV703 course. The model is trained and evaluated on a custom dataset, leveraging **PyTorch** and **Hugging Face's Transformers** library.
+This repository contains the implementation of **data augmented Swin Transformer-based image classifier** for the CV703 course.
 
 ## Installation
 
