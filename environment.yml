@@ -1,0 +1,19 @@
+name: swin-classifier-env
+channels:
+  - conda-forge
+  - defaults
+  - pytorch
+dependencies:
+  - python=3.9
+  - pytorch
+  - torchvision
+  - torchaudio
+  - pytorch-cuda=11.8
+  - transformers
+  - tqdm
+  - numpy
+  - pandas
+  - matplotlib
+  - wandb
+  - urllib3
+  - pip
