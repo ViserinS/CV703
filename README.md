@@ -14,6 +14,7 @@ Ensure you have [Conda](https://docs.conda.io/en/latest/) installed, then create
 ```bash
 conda env create -f environment.yml
 conda activate swin-classifier-env
+```
 
 ### 2. Prepare the Dataset
 
@@ -23,12 +24,13 @@ Ensure the dataset is downloaded and placed in the appropriate directory before 
 Training the Model
 
 To train the model, run:
-
 ```bash
 python train_swin.py
+```
 
 Then to test, run:
 ```bash
 python test_swin.py
+```
 
 The training and testing scripts accept command-line arguments for customization. Default configurations are provided, but you can override them by specifying parameters when running the scripts.
