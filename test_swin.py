@@ -154,7 +154,7 @@ if __name__ == '__main__':
                       help='path to Flowers102 dataset')
     
     # 模型参数
-    parser.add_argument('--test_model_path', type=str,default='experiments/20250130_204038/best_model.pth',
+    parser.add_argument('--test_model_path', type=str,default='experiments/best_model.pth',
                       help='path to the trained model checkpoint for testing')
     parser.add_argument('--num_classes', type=int, default=212,
                       help='number of classes')
